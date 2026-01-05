@@ -1,17 +1,17 @@
-from sklearn.ensemble import RandomForestRegressor
 import pickle
+
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import LabelEncoder
 
 from model.PredictionInput import PredictionInput
 from model.TrainInput import TrainInput
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
-
 
 categorical_columns = ['district', 'construction_status', 'market']
 
-"""Train the model with new data and save the updated model."""
-def train(data_to_train: TrainInput, path_to_csv, path_to_model):
 
+def train(data_to_train: TrainInput, path_to_csv: str, path_to_model: str) -> None:
+    """Train a RandomForestRegressor model and save it to a file."""
     df = pd.read_csv(path_to_csv)
 
     data = data_to_train.model_dump()
@@ -45,15 +45,18 @@ def train(data_to_train: TrainInput, path_to_csv, path_to_model):
         'model': forest,
         'encoders': encoders
     }
-    pickle.dump(model_data, open(path_to_model, 'wb'))
+    with open(path_to_model, 'wb') as f:
+        pickle.dump(model_data, f)
 
-def predict(model_file, input_data: PredictionInput) -> float:
-    model_data = pickle.load(open(model_file, 'rb'))
+
+def predict(model_file: str, input_data: PredictionInput) -> float:
+    """Load a trained model from a file and make a prediction."""
+    with open(model_file, 'rb') as f:
+        model_data = pickle.load(f)
 
     model = model_data['model']
     data = input_data.model_dump()
     encoders = model_data['encoders']
-
 
     calculated_floor_ratio = calculate_floor_ratio(data["floor"], data["total_floors"])
 
@@ -84,32 +87,32 @@ def predict(model_file, input_data: PredictionInput) -> float:
     return float(prediction[0])
 
 
-"""Calculate the ratio of the floor number to the total number of floors in a building."""
 def calculate_floor_ratio(floor: int, total_floors: int) -> float:
+    """Calculate the floor ratio."""
     if total_floors == 0:
         return 0.0
     return floor / total_floors
 
-"""
-Encode categorical columns using LabelEncoder and return the encoders for future use.
-"""
-def encode_categorical_columns_with_encoders(df: pd.DataFrame, categorical_columns: list):
+
+def encode_categorical_columns_with_encoders(df: pd.DataFrame, cols: list):
+    """Encode categorical columns using LabelEncoder and return the encoders."""
     encoders = {}
     df_copy = df.copy()
-    
-    for col in categorical_columns:
+
+    for col in cols:
         le = LabelEncoder()
         df_copy[col] = le.fit_transform(df_copy[col])
-        encoders[col] = le  # Zapisz encoder
-    
+        encoders[col] = le
+
     return df_copy, encoders
 
-"""Apply saved encoders to the input DataFrame."""
-def apply_encoders(df: pd.DataFrame, encoders: dict, categorical_columns: list) -> pd.DataFrame:
+
+def apply_encoders(df: pd.DataFrame, encoders: dict, cols: list) -> pd.DataFrame:
+    """Apply the provided encoders to the specified columns in the DataFrame."""
     df_copy = df.copy()
-    
-    for col in categorical_columns:
+
+    for col in cols:
         if col in encoders:
             df_copy[col] = encoders[col].transform(df_copy[col])
-    
+
     return df_copy

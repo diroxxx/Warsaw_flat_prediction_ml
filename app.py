@@ -1,31 +1,28 @@
-
-
-from fastapi import FastAPI, HTTPException
-import uvicorn
-from typing import Annotated
 from pathlib import Path
 
-from model.PredictionInput import PredictionInput
-from model.modelFunction import train, predict
+import uvicorn
+from fastapi import FastAPI, HTTPException
 from starlette import status
+
 from model.TrainInput import TrainInput
+from model.PredictionInput import PredictionInput
+from model.model_function import train, predict
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
-MODEL_DIR = Path(BASE_DIR).joinpath("ml_model")
-DATA_DIR = Path(BASE_DIR).joinpath("data")
+MODEL_DIR = BASE_DIR.joinpath("ml_model")
+DATA_DIR = BASE_DIR.joinpath("data")
 
 app = FastAPI()
 
-@app.get("/", tags=["intro"])
-def read_root():
-    return {"Hello": "World"}
-
-
 @app.post("/model/train", tags=["model"], status_code=status.HTTP_201_CREATED)
-async def train_model(train_data: TrainInput, data_train_name= "warsaw_flat", model_name="rfm_model"):
-
-    data_file = Path(DATA_DIR).joinpath(f"{data_train_name}.csv")
-    model_file = Path(MODEL_DIR).joinpath(f"{model_name}.pkl")
+async def train_model(
+    train_data: TrainInput,
+    data_train_name: str = "warsaw_flat",
+    model_name: str = "rfm_model",
+):
+    """Endpoint to train the model with new data."""
+    data_file = DATA_DIR.joinpath(f"{data_train_name}.csv")
+    model_file = MODEL_DIR.joinpath(f"{model_name}.pkl")
 
     if not model_file.exists():
         raise HTTPException(status_code=400, detail="Model not found.")
@@ -36,22 +33,17 @@ async def train_model(train_data: TrainInput, data_train_name= "warsaw_flat", mo
     train(train_data, data_file, model_file)
     return {"message": "Model trained successfully"}
 
-@app.post("/model/predict", tags=["model"], status_code=status.HTTP_200_OK)
-async def predict_price(input_data: PredictionInput, model_name="rfm_model"):
 
-    model_file = Path(MODEL_DIR).joinpath(f"{model_name}.pkl")
+@app.post("/model/predict", tags=["model"], status_code=status.HTTP_200_OK)
+async def predict_price(input_data: PredictionInput, model_name: str = "rfm_model"):
+    """Endpoint to predict the price using the trained model."""
+    model_file = MODEL_DIR.joinpath(f"{model_name}.pkl")
 
     if not model_file.exists():
         raise HTTPException(status_code=400, detail="Model not found.")
 
     prediction = predict(model_file, input_data)
-
     return {"predicted_price": prediction}
-
-
-# def is_input_valid(input_data: PredictionInput) -> bool:
-#     data = input_data.to_dict()
-
 
 
 if __name__ == "__main__":

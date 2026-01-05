@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 
 categorical_columns = ['district', 'construction_status', 'market']
 
-
+"""Train the model with new data and save the updated model."""
 def train(data_to_train: TrainInput, path_to_csv, path_to_model):
 
     df = pd.read_csv(path_to_csv)
@@ -84,13 +84,15 @@ def predict(model_file, input_data: PredictionInput) -> float:
     return float(prediction[0])
 
 
-
+"""Calculate the ratio of the floor number to the total number of floors in a building."""
 def calculate_floor_ratio(floor: int, total_floors: int) -> float:
     if total_floors == 0:
         return 0.0
     return floor / total_floors
 
-
+"""
+Encode categorical columns using LabelEncoder and return the encoders for future use.
+"""
 def encode_categorical_columns_with_encoders(df: pd.DataFrame, categorical_columns: list):
     encoders = {}
     df_copy = df.copy()
@@ -102,6 +104,7 @@ def encode_categorical_columns_with_encoders(df: pd.DataFrame, categorical_colum
     
     return df_copy, encoders
 
+"""Apply saved encoders to the input DataFrame."""
 def apply_encoders(df: pd.DataFrame, encoders: dict, categorical_columns: list) -> pd.DataFrame:
     df_copy = df.copy()
     

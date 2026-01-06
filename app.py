@@ -4,8 +4,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from starlette import status
 
-from model.TrainInput import TrainInput
-from model.PredictionInput import PredictionInput
+from model.Input_model import TrainInput, PredictionInput
 from model.model_function import train, predict
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent

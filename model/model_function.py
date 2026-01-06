@@ -4,8 +4,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 
-from model.PredictionInput import PredictionInput
-from model.TrainInput import TrainInput
+from model.Input_model import TrainInput, PredictionInput
 
 categorical_columns = ['district', 'construction_status', 'market']
 

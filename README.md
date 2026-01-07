@@ -1,6 +1,6 @@
 # Warsaw flat prediction API
 
- This repository contains a simple API for predicting flat prices in Warsaw using a pre-trained machine learning model. The API is built using FastAPI and provides endpoints for making predictions and training based on input features.
+ A simple API for predicting flat prices in Warsaw using a pre-trained machine learning model. The API is built using FastAPI and provides endpoints for making predictions and training based on input features.
  
 ## Contents
 - \`Project description\`

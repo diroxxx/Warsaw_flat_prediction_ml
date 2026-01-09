@@ -50,7 +50,7 @@ The training data consists of a CSV file named \`warsaw_flats.csv\`, which conta
 ## Usage
 1. Start the FastAPI server using Uvicorn:
    ```bash
-   uvicorn main:app --reload
+   python app.py
    ```
 2. Access the API documentation at \`http://127.0.0.1:8008/docs \` to explore the available endpoints and test the API.
 3. Use the \`/predict\` endpoint to make predictions by sending a POST request with the required features in the request body.

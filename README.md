@@ -4,23 +4,12 @@
  
 ## Contents
 - \`Project description\`
-- \`Lib used\`
 - \`Training data information\`
 - \`Installation\`
 - \`Usage\`
 
 ## Project description
 The project aims to provide a RESTful API that can predict the price of flats in Warsaw based on various features such as area, number of rooms, location, and other relevant attributes. The API allows users to send feature data and receive predicted prices in response. Training data have roughly 5000 entries of flats in Warsaw with various features and their corresponding prices.
-
-## Lib used
-- Python 3.13.7
-- FastAPI
-- Uvicorn
-- Scikit-learn
-- Pandas
-- NumPy
-- Joblib
-- Pydantic
 
 ## Training data information
 The training data consists of a CSV file named \`warsaw_flats.csv\`, which contains the following columns:
@@ -40,7 +29,7 @@ The training data consists of a CSV file named \`warsaw_flats.csv\`, which conta
 2. Create a virtual environment and activate it: 
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   source venv/bin/activate 
    ```
 3. Install the required dependencies:
    ```bash
@@ -50,13 +39,13 @@ The training data consists of a CSV file named \`warsaw_flats.csv\`, which conta
 ## Usage
 1. Start the FastAPI server using Uvicorn:
    ```bash
-   python app.py
+   python  ./api.py
    ```
 2. Access the API documentation at \`http://127.0.0.1:8008/docs \` to explore the available endpoints and test the API.
 3. Use the \`/predict\` endpoint to make predictions by sending a POST request with the required features in the request body.
 4. Use the \`/train\` endpoint to retrain the model with new data if needed.
 5. To stop the server, press \`CTRL + C\` in the terminal where the server is running.
-## Example Request
+## Example Request 
 Here is an example of a JSON payload to send to the \`/predict\` endpoint:
 ```json
 {

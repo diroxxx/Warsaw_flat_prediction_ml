@@ -1,5 +1,5 @@
+"""Functions for loading a model and making predictions."""
 import pickle
-from enum import Enum
 
 import pandas as pd
 
@@ -17,7 +17,6 @@ def predict(model_file: str, input_data: PredictionInput) -> float:
     data = input_data.model_dump()
     encoders = model_data['encoders']
 
-    """Create a DataFrame from the input data."""
     input_df = pd.DataFrame([{
         "district": data["district"],
         "surface": data["surface"],
@@ -41,14 +40,12 @@ def apply_encoders(df: pd.DataFrame, encoders: dict, cols: list) -> pd.DataFrame
     """Apply the provided encoders to the specified columns in the DataFrame."""
     df_copy = df.copy()
 
-    """Convert Enum values to their underlying values."""
     for col in cols:
         if col not in df_copy.columns:
             continue
         if col not in encoders:
             continue
 
-    """Apply encoders to categorical columns."""
     for col in cols:
         if col in encoders:
             df_copy[col] = encoders[col].transform(df_copy[col])

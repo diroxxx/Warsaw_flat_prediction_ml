@@ -41,10 +41,10 @@ if exist "%~dp0requirements.txt" (
 
 rem - start API and Streamlit in separate cmd windows
 echo Uruchamianie API...
-start "API" cmd /k "%~dp0venv\Scripts\python.exe -m uvicorn api:app --host 127.0.0.1 --port 8008 --reload"
+start "API" cmd /k "%~dp0venv\Scripts\python.exe -m uvicorn app.api:app --host 127.0.0.1 --port 8008 --reload"
 
 echo Uruchamianie Streamlit...
-start "Streamlit" cmd /k "%~dp0venv\Scripts\python.exe -m streamlit run streamlit_app.py"
+start "Streamlit" cmd /k ""%~dp0venv\Scripts\python.exe" -m streamlit run "%~dp0app\streamlit_app.py""
 
 echo Aplikacje uruchomione. Zamknij okna `API` i `Streamlit` aby zatrzymac procesy.
 pause

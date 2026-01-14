@@ -1,72 +1,164 @@
-# Warsaw flat prediction API
+# Dokumentacja - Przewidywanie Cen Mieszkań w Warszawie
 
-A machine learning application for predicting apartment prices in Warsaw.  The project consists of a FastAPI backend and a Streamlit web interface.
+## Streszczenie
 
-## Contents
-- \`Project description\`
-- \`Training data information\`
-- \`Installation\`
-- \`Usage\`
+Aplikacja służy do przewidywania cen mieszkań w Warszawie z wykorzystaniem modelu uczenia maszynowego. Wykorzystywana będzie zarówno przez osoby chcące sprzedać mieszkanie, jak i przez osoby chcące takie mieszkanie kupić. 
 
-## Project description
-This application uses a machine learning model to predict apartment prices in Warsaw based on various features such as location, surface area, year of construction, and other property characteristics. 
+**Dla kupujących:**  
+Aplikacja pozwala sprawdzić, czy cena mieszkania jest sprawiedliwa, okazyjna lub znacznie zbyt wysoka.  Porównując cenę od sprzedawcy z ceną z aplikacji, nawet bez żadnego doświadczenia ani wiedzy o rynku mieszkaniowym będziesz w stanie negocjować lub szukać sprawiedliwych cen. 
 
-## Training data information
-The training data consists of a CSV file named \`warsaw_flats.csv\`, which contains the following columns:
-- \`area\`: The area of the flat in square meters.
-- \`num_rooms\`: The number of rooms in the flat.
-- \`location\`: The location of the flat within Warsaw.
-- \`floor\`: The floor number of the flat.
-- \`year_built\`: The year the building was constructed.
-- \`price\`: The price of the flat in PLN (target variable).
+**Dla sprzedających:**  
+Możesz sprawdzić, w jakiej cenie wystawić mieszkanie, oszczędzając czas i omijając koszty związane z tradycyjną wyceną. 
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/diroxxx/Warsaw_flat_prediction_ml.git
-    cd Warsaw_flat_prediction_ml
-    ```
-2. Create a virtual environment and activate it: 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate 
-   ```
-3. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-   
-## Usage
-1. Start the FastAPI server using Uvicorn:
-   ```bash
-   python  ./api.py
-   ```
-2. Access the API documentation at \`http://127.0.0.1:8008/docs \` to explore the available endpoints and test the API.
-3. Use the \`/predict\` endpoint to make predictions by sending a POST request with the required features in the request body.
-4. Use the \`/train\` endpoint to retrain the model with new data if needed.
-5. To stop the server, press \`CTRL + C\` in the terminal where the server is running.
-## Example Request 
-Here is an example of a JSON payload to send to the \`/predict\` endpoint:
-```json
+Aplikacja znacznie ułatwia proces kupna/sprzedaży mieszkań i czyni go bezpieczniejszym dla każdej ze stron. 
+
+### Moduły aplikacji: 
+- **Moduł API** (FastAPI) - backend RESTful API
+- **Moduł UI** (Streamlit) - interfejs graficzny użytkownika
+
+---
+
+## Wykorzystany model regresyjny
+
+**Algorytm:** Gradient Boosting Regressor
+
+**Metryki jakości modelu:**
+
+| Metryka | Wartość | 
+|---------|---------|
+| **R² Score** | 0.9646 |
+| **MAE** (Mean Absolute Error) | 44,982.03 PLN |
+
+**Dane treningowe:** 5,042 rzeczywistych ogłoszeń z rynku warszawskiego
+
+---
+
+## 1. Dane Wejściowe
+
+Aplikacja przyjmuje następujące parametry wejściowe: 
+
+### 1.1 Parametry wymagane
+
+| Parametr | Typ | Opis | Zakres wartości |
+|----------|-----|------|-----------------|
+| `district` | tekst | Dzielnica Warszawy | Bemowo, Białołęka, Bielany, Mokotów, Ochota, Praga, Praga-Południe, Praga-Północ, Targówek, Ursus, Ursynów, Wawer, Wilanów, Wola, Włochy, Śródmieście, Żoliborz |
+| `surface` | liczba | Powierzchnia mieszkania (m²) | 14 - 102 |
+| `rooms_num` | liczba | Liczba pokoi | 1 - 6 |
+| `construction_status` | tekst | Stan wykończenia | do zamieszkania, do wykończenia, do remontu |
+| `market` | tekst | Typ rynku | pierwotny, wtórny |
+| `build_year` | liczba | Rok budowy | 1900 - 2025 |
+| `floor_no` | liczba | Numer piętra | 0 - 10 |
+| `building_floors_num` | liczba | Liczba pięter w budynku | 1 - 30 |
+| `transit_dur_m` | liczba | Czas dojazdu do centrum (minuty) | 5 - 230 |
+
+### 1.2 Ograniczenia walidacji
+
+- Liczba pięter w budynku musi być większa lub równa numerowi piętra mieszkania
+
+---
+
+## 2. Dane Wyjściowe
+
+Aplikacja zwraca przewidywaną cenę mieszkania w formacie: 
+
+| Pole | Opis |
+|------|------|
+| **Przewidywana cena** | Cena mieszkania w PLN (np.  "1344949.96 PLN") |
+
+---
+
+### 3 Dostępne endpointy API
+
+#### 3.1 GET /model/options
+
+Zwraca dostępne opcje dla pól kategorycznych (dzielnice, statusy, typy rynku).
+
+Przykładowa odpowiedź:
+
+```
 {
-  "district": "Mokotów",
-  "surface": 60.5,
-  "rooms_num": 3,
-  "construction_status": "do zamieszkania",
-  "market": "wtórny",
-  "build_year": 2005,
-  "floor": 2,
-  "total_floors": 5,
-  "transit_dur_s": 1200
+"districts": ["Bemowo", "Białołęka", ... ],
+"construction_statuses": ["do zamieszkania", "do wykończenia", "do remontu"],
+"markets": ["pierwotny", "wtórny"]
+}
+```
+#### 3.2 POST /model/predict
+
+Wykonuje predykcję ceny mieszkania na podstawie podanych parametrów.
+
+Przykładowe żądanie:
+
+```
+{
+"district": "Mokotów",
+"surface": 60.5,
+"rooms_num": 3,
+"construction_status": "do zamieszkania",
+"market": "wtórny",
+"build_year": 2005,
+"floor_no": 2,
+"building_floors_num": 5,
+"transit_dur_m": 30
+}
+```
+Przykładowa odpowiedź:
+
+```
+{
+"predicted_price": "1344949.96"
 }
 ```
 
-## Example Response
-The response from the \`/predict\` endpoint will be a JSON object containing the predicted price:
-```json
-{
-  "predicted_price": 550000.0
-}
+## 4. Instalacja i Uruchomienie
+
+### 4.1 Wymagania systemowe
+
+- **Python 3.13.7** zainstalowany i dodany do zmiennych środowiskowych
+
+### 4.2 Kroki instalacji i uruchomienia aplikacji
+
+**Krok 1: Pobranie aplikacji**
+1. Wejdź na stronę:  https://github.com/diroxxx/Warsaw_flat_prediction_ml
+2. Kliknij przycisk **`Code`**
+3. Wybierz opcję **`Download ZIP`**
+
+**Krok 2: Rozpakowanie**
+1. Znajdź pobrany plik `Warsaw_flat_prediction_ml-main.zip`
+2. Rozpakuj archiwum
+3. Przejdź do wypakowanego folderu `Warsaw_flat_prediction_ml`
+
+**Krok 3: Uruchomienie**
+1. W folderze `Warsaw_flat_prediction_ml` znajdź plik **`start.bat`**
+2. Kliknij dwukrotnie na plik `start.bat`
+3. Poczekaj, aż otworzy się okno przeglądarki (pierwsze uruchomienie może zająć kilka minut)
+
+**Krok 4: Korzystanie z aplikacji**
+- Aplikacja automatycznie otworzy się w przeglądarce pod adresem: **http://localhost:8501/**
+- Jeśli nie otworzyła się automatycznie, wpisz adres ręcznie w przeglądarce
+
+## 5. Struktura Projektu
+
 ```
-  
-   
+Warsaw_flat_prediction_ml
+│
+├── start.bat                   # Skrypt uruchamiający aplikację       
+├── requirements. txt
+├── README.md
+|
+├── app/                      
+│   ├──  streamlit_app.py       # Interfejs graficzny (frontend)
+│   └──  api.py                 # Moduł API (backend)   
+│
+├── model/                      
+│   ├── input_model.py          # Definicja danych wejściowych
+│   └── model_function.py       # Funkcja predykcji
+│
+├── ml_model/                  
+│   └── flat_model. pkl          # Model uczenia maszynowego
+│
+├── data/                       # Dane treningowe
+│   └── warsaw_flats.csv        
+│
+└── images/                     
+    └── warsaw_image.jpg        
+```

@@ -1,7 +1,6 @@
 """
 Streamlit app for predicting apartment prices in Warsaw.
 """
-
 import time
 from pathlib import Path
 
@@ -11,7 +10,10 @@ import requests
 API_BASE = "http://127.0.0.1:8008"
 PREDICT_URL = f"{API_BASE}/model/predict"
 OPTIONS_URL = f"{API_BASE}/model/options"
-HEADER_IMAGE = Path("images/warsaw_image.jpg")
+
+BASE_DIR = Path(__file__).resolve().parent
+HEADER_IMAGE = (BASE_DIR.parent / "images" / "warsaw_image.jpg").resolve()
+
 
 districts: list[str] = []
 construction_statuses: list[str] = []
@@ -38,7 +40,7 @@ if "options_loaded" not in st.session_state:
     st.session_state["construction_statuses"] = construction_statuses
     st.session_state["markets"] = markets
 
-st.title("Przewidywanie cen mieszkań w warszwawie")
+st.title("Przewidywanie cen mieszkań w Warszawie")
 
 if HEADER_IMAGE.exists():
     st.image(str(HEADER_IMAGE))
@@ -66,9 +68,9 @@ with st.form("predict_form"):
     building_floors_num = c8.number_input("Liczba pięter w budynku", min_value=1, max_value=50, value=5, step=1)
     transit_dur_s = c9.number_input("Czas komunikacją miejską do centrum warszawy (m)", min_value=5.0, max_value=300.0, value=5.0, format="%.1f")
 
-    model_name_col, submit_col = st.columns([3, 1])
-    model_name = model_name_col.text_input("Nazwa modelu", value="flat_model")
+    model_name_col, submit_col = st.columns([2, 1])
     submitted = submit_col.form_submit_button("Oblicz cenę")
+
 
 if submitted:
     payload = {
@@ -87,7 +89,7 @@ if submitted:
         time.sleep(0.6)
         st.divider()
         try:
-            resp = requests.post(PREDICT_URL, params={"model_name": model_name}, json=payload, timeout=10)
+            resp = requests.post(PREDICT_URL, json=payload, timeout=10)
             if resp.ok:
                 data = resp.json()
                 price_raw = data.get("predicted_price")

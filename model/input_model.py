@@ -51,7 +51,7 @@ class PredictionInput(BaseModel):
     build_year: int = Field(..., gt=1900, lt=2026, json_schema_extra={"example": 2005})
     floor_no: int = Field(..., ge=0, lt=50, json_schema_extra={"example": 2})
     building_floors_num: int = Field(..., ge=1, lt=50, json_schema_extra={"example": 5})
-    transit_dur_s: float = Field(..., gt=0, lt=7200, json_schema_extra={"example": 1200.0})
+    transit_dur_m: float = Field(..., gt=0, lt=7200, json_schema_extra={"example": 1200.0})
 
     @field_validator("building_floors_num")
     def validate_floors(cls, v, info: ValidationInfo):

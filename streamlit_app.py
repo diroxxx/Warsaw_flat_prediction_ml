@@ -64,7 +64,7 @@ with st.form("predict_form"):
     c7, c8, c9 = st.columns(3)
     floor_no = c7.number_input("Piętro", min_value=0, max_value=50, value=2, step=1)
     building_floors_num = c8.number_input("Liczba pięter w budynku", min_value=1, max_value=50, value=5, step=1)
-    transit_dur_s = c9.number_input("Czas do przystanku (s)", min_value=1.0, max_value=7200.0, value=1200.0, format="%.1f")
+    transit_dur_s = c9.number_input("Czas komunikacją miejską do centrum warszawy (m)", min_value=5.0, max_value=300.0, value=5.0, format="%.1f")
 
     model_name_col, submit_col = st.columns([3, 1])
     model_name = model_name_col.text_input("Nazwa modelu", value="flat_model")
@@ -80,7 +80,7 @@ if submitted:
         "build_year": int(build_year),
         "floor_no": int(floor_no),
         "building_floors_num": int(building_floors_num),
-        "transit_dur_s": float(transit_dur_s)
+        "transit_dur_m": float(transit_dur_s)
     }
 
     with st.spinner("Obliczanie..."):

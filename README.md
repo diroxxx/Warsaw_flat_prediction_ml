@@ -1,7 +1,7 @@
 # Warsaw flat prediction API
 
- A simple API for predicting flat prices in Warsaw using a pre-trained machine learning model. The API is built using FastAPI and provides endpoints for making predictions and training based on input features.
- 
+A machine learning application for predicting apartment prices in Warsaw.  The project consists of a FastAPI backend and a Streamlit web interface.
+
 ## Contents
 - \`Project description\`
 - \`Training data information\`
@@ -9,7 +9,7 @@
 - \`Usage\`
 
 ## Project description
-The project aims to provide a RESTful API that can predict the price of flats in Warsaw based on various features such as area, number of rooms, location, and other relevant attributes. The API allows users to send feature data and receive predicted prices in response. Training data have roughly 5000 entries of flats in Warsaw with various features and their corresponding prices.
+This application uses a machine learning model to predict apartment prices in Warsaw based on various features such as location, surface area, year of construction, and other property characteristics. 
 
 ## Training data information
 The training data consists of a CSV file named \`warsaw_flats.csv\`, which contains the following columns:

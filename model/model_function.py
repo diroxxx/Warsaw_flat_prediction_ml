@@ -1,4 +1,6 @@
 import pickle
+from enum import Enum
+
 import pandas as pd
 
 from model.input_model import PredictionInput
@@ -7,6 +9,7 @@ categorical_columns = ['district', 'construction_status', 'market']
 
 def predict(model_file: str, input_data: PredictionInput) -> float:
     """Load a trained model from a file and make a prediction."""
+
     with open(model_file, 'rb') as f:
         model_data = pickle.load(f)
 
@@ -14,6 +17,7 @@ def predict(model_file: str, input_data: PredictionInput) -> float:
     data = input_data.model_dump()
     encoders = model_data['encoders']
 
+    """Create a DataFrame from the input data."""
     input_df = pd.DataFrame([{
         "district": data["district"],
         "surface": data["surface"],
@@ -23,7 +27,7 @@ def predict(model_file: str, input_data: PredictionInput) -> float:
         "construction_status": data["construction_status"],
         "market": data["market"],
         "build_year": data["build_year"],
-        "transit_dur_s": data["transit_dur_s"],
+        "transit_dur_m": data["transit_dur_m"],
     }])
 
     input_df = apply_encoders(input_df, encoders, categorical_columns)
@@ -37,12 +41,14 @@ def apply_encoders(df: pd.DataFrame, encoders: dict, cols: list) -> pd.DataFrame
     """Apply the provided encoders to the specified columns in the DataFrame."""
     df_copy = df.copy()
 
+    """Convert Enum values to their underlying values."""
     for col in cols:
         if col not in df_copy.columns:
             continue
         if col not in encoders:
             continue
 
+    """Apply encoders to categorical columns."""
     for col in cols:
         if col in encoders:
             df_copy[col] = encoders[col].transform(df_copy[col])

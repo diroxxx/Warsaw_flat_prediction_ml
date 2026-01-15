@@ -43,15 +43,15 @@ class Market(str, Enum):
 class PredictionInput(BaseModel):
     """Schema for input data used in price prediction."""
     district: District = Field(..., json_schema_extra={"example": District.MOKOTOW.value})
-    surface: float = Field(..., gt=10, lt=500, json_schema_extra={"example": 60.5})
-    rooms_num: int = Field(..., gt=0, lt=7, json_schema_extra={"example": 3})
+    surface: float = Field(..., ge=14, le=102, json_schema_extra={"example": 60.5})
+    rooms_num: int = Field(..., ge=1, le=6, json_schema_extra={"example": 3})
     construction_status: ConstructionStatus = (
         Field(..., json_schema_extra={"example": ConstructionStatus.READY.value}))
     market: Market = Field(..., json_schema_extra={"example": Market.SECONDARY.value})
-    build_year: int = Field(..., gt=1900, lt=2026, json_schema_extra={"example": 2005})
-    floor_no: int = Field(..., ge=0, lt=50, json_schema_extra={"example": 2})
-    building_floors_num: int = Field(..., ge=1, lt=50, json_schema_extra={"example": 5})
-    transit_dur_m: float = Field(..., gt=0, lt=7200, json_schema_extra={"example": 1200.0})
+    build_year: int = Field(..., ge=1900, le=2025, json_schema_extra={"example": 2005})
+    floor_no: int = Field(..., ge=0, le=10, json_schema_extra={"example": 2})
+    building_floors_num: int = Field(..., ge=1, le=50, json_schema_extra={"example": 5})
+    transit_dur_m: float = Field(..., ge=4.9, le=230, json_schema_extra={"example": 30.0})
 
     @field_validator("building_floors_num")
     def validate_floors(cls, v, info: ValidationInfo):

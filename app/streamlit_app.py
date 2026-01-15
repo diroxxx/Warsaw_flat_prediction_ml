@@ -52,8 +52,8 @@ with st.form("predict_form"):
     district = c1.selectbox("Dzielnica", districts)
     surface = c2.number_input(
         "Powierzchnia (m²)",
-        min_value=10.0,
-        max_value=500.0,
+        min_value=14.0,
+        max_value=102.0,
         value=60.5,
         format="%.2f")
     rooms_num = c3.number_input("Liczba pokoi", min_value=1, max_value=6, value=3, step=1)
@@ -66,9 +66,9 @@ with st.form("predict_form"):
     c7, c8, c9 = st.columns(3)
     floor_no = c7.number_input("Piętro", min_value=0, max_value=50, value=2, step=1)
     building_floors_num = c8.number_input("Liczba pięter w budynku", min_value=1, max_value=50, value=5, step=1)
-    transit_dur_s = c9.number_input("Czas komunikacją miejską do centrum warszawy (m)", min_value=5.0, max_value=300.0, value=5.0, format="%.1f")
+    transit_dur_m = c9.number_input("Czas komunikacją miejską do centrum warszawy (m)", min_value=4.9, max_value=230.0, value=5.0, format="%.1f")
 
-    model_name_col, submit_col = st.columns([2, 1])
+    model_name_col, submit_col = st.columns([3, 1])
     submitted = submit_col.form_submit_button("Oblicz cenę")
 
 
@@ -82,7 +82,7 @@ if submitted:
         "build_year": int(build_year),
         "floor_no": int(floor_no),
         "building_floors_num": int(building_floors_num),
-        "transit_dur_m": float(transit_dur_s)
+        "transit_dur_m": float(transit_dur_m)
     }
 
     with st.spinner("Obliczanie..."):

@@ -24,12 +24,12 @@ Aplikacja znacznie ułatwia proces kupna/sprzedaży mieszkań i czyni go bezpiec
 
 **Metryki jakości modelu:**
 
-| Metryka | Wartość | 
-|---------|---------|
-| **R² Score** | 0.9646 |
-| **MAE** (Mean Absolute Error) | 44,982.03 PLN |
+| Metryka        | Wartość          |
+|----------------|------------------|
+| **R² Score**   | 0.9646           |
+| **MAE**        | 44,982.03 PLN    |
 
-**Dane treningowe:** 5,042 rzeczywistych ogłoszeń z rynku warszawskiego
+**Dane treningowe:** 4,539 rzeczywistych ogłoszeń z rynku warszawskiego
 
 ---
 
@@ -39,17 +39,18 @@ Aplikacja przyjmuje następujące parametry wejściowe:
 
 ### 1.1 Parametry wymagane
 
-| Parametr | Typ | Opis | Zakres wartości |
-|----------|-----|------|-----------------|
-| `district` | tekst | Dzielnica Warszawy | Bemowo, Białołęka, Bielany, Mokotów, Ochota, Praga, Praga-Południe, Praga-Północ, Targówek, Ursus, Ursynów, Wawer, Wilanów, Wola, Włochy, Śródmieście, Żoliborz |
-| `surface` | liczba | Powierzchnia mieszkania (m²) | 14 - 102 |
-| `rooms_num` | liczba | Liczba pokoi | 1 - 6 |
-| `construction_status` | tekst | Stan wykończenia | do zamieszkania, do wykończenia, do remontu |
-| `market` | tekst | Typ rynku | pierwotny, wtórny |
-| `build_year` | liczba | Rok budowy | 1900 - 2025 |
-| `floor_no` | liczba | Numer piętra | 0 - 10 |
-| `building_floors_num` | liczba | Liczba pięter w budynku | 1 - 30 |
-| `transit_dur_m` | liczba | Czas dojazdu do centrum (minuty) | 5 - 230 |
+| Parametr             | Typ    | Opis                         | Zakres wartości |
+|----------------------|--------|------------------------------|-----------------|
+| `district`           | tekst  | Dzielnica Warszawy           | Bemowo, Białołęka, ... |
+| `surface`            | liczba | Powierzchnia mieszkania (m²) | 14 - 102        |
+| `rooms_num`          | liczba | Liczba pokoi                 | 1 - 6           |
+| `construction_status`| tekst  | Stan wykończenia             | do zamieszkania, do wykończenia, do remontu |
+| `market`             | tekst  | Typ rynku                    | pierwotny, wtórny |
+| `build_year`         | liczba | Rok budowy                   | 1900 - 2025     |
+| `floor_no`           | liczba | Numer piętra                 | 0 - 10          |
+| `building_floors_num`| liczba | Liczba pięter w budynku      | 1 - 30          |
+| `transit_dur_m`      | liczba | Czas dojazdu do centrum (min)| 5 - 230         |
+
 
 ### 1.2 Ograniczenia walidacji
 
@@ -61,9 +62,9 @@ Aplikacja przyjmuje następujące parametry wejściowe:
 
 Aplikacja zwraca przewidywaną cenę mieszkania w formacie: 
 
-| Pole | Opis |
-|------|------|
-| **Przewidywana cena** | Cena mieszkania w PLN (np.  "1344949.96 PLN") |
+| Pole              | Opis                              |
+|-------------------|-----------------------------------|
+| `predicted_price` | Cena mieszkania w PLN (np. 1344949.96) |
 
 ---
 
